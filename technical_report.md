@@ -1,8 +1,8 @@
-# MPCSFaaS: Technical Report
+# Dispatch: Technical Report
 
 ## 1. How the System Works (Overview)
 
-MPCSFaaS is a simple serverless platform where you can register Python functions and run them remotely. It has three main pieces that run as separate processes:
+Dispatch is a simple serverless platform where you can register Python functions and run them remotely. It has three main pieces that run as separate processes:
 
 ```
        [  Client  ]

@@ -1,4 +1,4 @@
-# MPCSFaaS: Performance Report
+# Dispatch: Performance Report
 
 ## 1. How We Ran the Tests
 
