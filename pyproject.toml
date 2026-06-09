@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=64.0", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mpcsfaas"
+version = "0.1.0"
+authors = [
+    {name = "mpcsfaas author"},
+    {email = "mpcsfaas@foobar.com"},
+]
+description = "MPCSFaaS example package."
+readme = "README.md"
+requires-python = "==3.12.*"
+
+license = {text = "MIT"}
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: Implementation :: CPython",
+]
+dependencies = [
+    "requests",
+    "dill",
+    "fastapi",
+    "uvicorn",
+    "redis",
+    "pyzmq",
+    "pytest",
+    "httpx",
+    "pydantic",
+]
+
+[tool.setuptools.packages.find]
+namespaces = false
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
