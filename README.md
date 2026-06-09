@@ -6,7 +6,7 @@
 ![ZeroMQ](https://img.shields.io/badge/ZeroMQ-messaging-orange)
 ![Tests](https://img.shields.io/badge/tests-72%20passing-brightgreen)
 
-A from-scratch **serverless Function-as-a-Service (FaaS) platform** built for the UChicago MPCS Distributed Systems course. Register any Python function, submit it with arguments, and get the result back — the platform handles serialization, scheduling, and distributed execution across worker processes.
+A from-scratch **serverless Function-as-a-Service (FaaS) platform**. Register any Python function, submit it with arguments, and get the result back. The platform handles serialization, scheduling, and distributed execution across worker processes.
 
 > Built to explore the core ideas behind AWS Lambda and similar platforms: task queuing, worker orchestration, and multiple communication patterns for distributed workloads.
 
@@ -31,17 +31,17 @@ A from-scratch **serverless Function-as-a-Service (FaaS) platform** built for th
                                          └─────────┘   └─────────┘   └─────────┘
 ```
 
-The system runs as four independent processes. The dispatcher supports three communication patterns — local subprocesses, ZMQ pull (REQ/REP), and ZMQ push (DEALER/ROUTER) — each with different latency and throughput trade-offs.
+The system runs as four independent processes. The dispatcher supports three communication patterns: local subprocesses, ZMQ pull (REQ/REP), and ZMQ push (DEALER/ROUTER), each with different latency and throughput trade-offs.
 
 ---
 
 ## Highlights
 
-- **Three dispatcher modes** — benchmark-driven comparison of local multiprocessing vs. ZMQ pull vs. ZMQ push
-- **Arbitrary Python functions** — serialize and execute any callable via `dill`, not just pre-registered handlers
-- **72-test suite** — unit tests with mocked Redis/ZMQ run in seconds; integration tests spin up the full stack
-- **Weak-scaling benchmarks** — measured throughput and per-task latency across 1–8 workers with noop and sleep workloads
-- **Clean REST API** — register, execute, poll status, and fetch results over HTTP
+- **Three dispatcher modes**: benchmark-driven comparison of local multiprocessing vs. ZMQ pull vs. ZMQ push
+- **Arbitrary Python functions**: serialize and execute any callable via `dill`, not just pre-registered handlers
+- **72-test suite**: unit tests with mocked Redis/ZMQ run in seconds; integration tests spin up the full stack
+- **Weak-scaling benchmarks**: measured throughput and per-task latency across 1-8 workers with noop and sleep workloads
+- **Clean REST API**: register, execute, poll status, and fetch results over HTTP
 
 ---
 
@@ -53,13 +53,13 @@ The system runs as four independent processes. The dispatcher supports three com
 # Install dependencies
 pip install -e .
 
-# Terminal 1 — Redis
+# Terminal 1 - Redis
 redis-server
 
-# Terminal 2 — API server
+# Terminal 2 - API server
 uvicorn main:app --reload
 
-# Terminal 3 — Dispatcher (choose a mode, see below)
+# Terminal 3 - Dispatcher (choose a mode, see below)
 python3 task_dispatcher.py -m local -w 4
 ```
 
@@ -75,7 +75,7 @@ Server runs at `http://127.0.0.1:8000`.
 | **Pull** | `python3 task_dispatcher.py -m pull -p 5555 -w 4` | Workers connect and request tasks over ZMQ REQ/REP |
 | **Push** | `python3 task_dispatcher.py -m push -p 5556 -w 4` | Dispatcher actively routes tasks to workers over ZMQ DEALER/ROUTER |
 
-**Choosing `-w`:** `-w 4` works well as a default. For CPU-bound tasks match your core count; for I/O-bound tasks (sleep, network) `-w 8` or higher is fine. Avoid `-w > 8` with pull/push on very short tasks — see the [performance report](performance_report.md).
+**Choosing `-w`:** `-w 4` works well as a default. For CPU-bound tasks match your core count; for I/O-bound tasks (sleep, network) `-w 8` or higher is fine. Avoid `-w > 8` with pull/push on very short tasks. See the [performance report](performance_report.md).
 
 ---
 
@@ -83,8 +83,8 @@ Server runs at `http://127.0.0.1:8000`.
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/register_function` | `POST` | Serialize and register a function → returns `function_id` |
-| `/execute_function` | `POST` | Submit a task with arguments → returns `task_id` |
+| `/register_function` | `POST` | Serialize and register a function, returns `function_id` |
+| `/execute_function` | `POST` | Submit a task with arguments, returns `task_id` |
 | `/status/{task_id}` | `GET` | Returns `QUEUED`, `RUNNING`, `COMPLETED`, or `FAILED` |
 | `/result/{task_id}` | `GET` | Returns the result (or exception) once complete |
 
@@ -112,7 +112,7 @@ import time
 while True:
     data = requests.get(f"http://127.0.0.1:8000/result/{task_id}").json()
     if data["status"] in ("COMPLETED", "FAILED"):
-        print(deserialize(data["result"]))  # → 7
+        print(deserialize(data["result"]))  # -> 7
         break
     time.sleep(0.1)
 ```
@@ -123,7 +123,7 @@ while True:
 
 Benchmarks run on macOS (Apple M-series), weak scaling: 10 tasks per worker.
 
-**Noop tasks — overhead only (throughput in tasks/sec)**
+**Noop tasks - overhead only (throughput in tasks/sec)**
 
 | Workers | Local | Pull | Push |
 |---------|-------|------|------|
@@ -132,7 +132,7 @@ Benchmarks run on macOS (Apple M-series), weak scaling: 10 tasks per worker.
 | 4 | 194 | 201 | **246** |
 | 8 | 222 | 212 | **233** |
 
-**Sleep tasks (100ms) — parallelism test (total wall time in sec)**
+**Sleep tasks (100ms) - parallelism test (total wall time in sec)**
 
 | Workers | Local | Pull | Push |
 |---------|-------|------|------|
@@ -164,7 +164,7 @@ python3 -m pytest tests/ -v
 
 ```
 main.py               # FastAPI server
-task_dispatcher.py    # Dispatcher — local / pull / push modes
+task_dispatcher.py    # Dispatcher - local / pull / push modes
 pull_worker.py        # Pull mode worker process
 push_worker.py        # Push mode worker process
 utils/                # serialize / deserialize helpers (dill-based)
@@ -176,9 +176,9 @@ performance_client.py # weak-scaling benchmark script
 
 ## Reports
 
-- [technical_report.md](technical_report.md) — architecture, design decisions, implementation notes
-- [testing_report.md](testing_report.md) — test coverage rationale
-- [performance_report.md](performance_report.md) — full benchmark results and analysis
+- [technical_report.md](technical_report.md) - architecture, design decisions, implementation notes
+- [testing_report.md](testing_report.md) - test coverage rationale
+- [performance_report.md](performance_report.md) - full benchmark results and analysis
 
 ---
 
